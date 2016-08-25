@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name     = 'XLData'
-  s.version  = '2.0.3'
+  s.version  = '2.0.2'
   s.license  = 'MIT'
   s.summary  = 'XLData provides an elegant and concise way to load, synchronize and show data sets into UITableViews and UICollectionViews.'
   s.homepage = 'https://github.com/SolarCS/CipherXLData'
@@ -15,7 +15,7 @@ Pod::Spec.new do |s|
   end
   s.subspec 'CoreRemote' do |sp|
     sp.source_files = 'XLData/XL/CoreRemote/**/*.{h,m}'
-    sp.dependency 'AFNetworking', '~> 3.0'
+    sp.dependency 'AFNetworking', '~> 2.0'
   end
 
   s.subspec 'DataStore' do |sp|
