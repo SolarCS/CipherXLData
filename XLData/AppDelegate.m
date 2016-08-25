@@ -24,7 +24,7 @@
 // THE SOFTWARE.
 
 #import "AppDelegate.h"
-#import <AFNetworkActivityLogger/AFNetworkActivityLogger.h>
+//#import <AFNetworkActivityLogger/AFNetworkActivityLogger.h>
 
 @interface AppDelegate ()
 
@@ -35,11 +35,11 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     // Override point for customization after application launch.
-    [AFNetworkActivityLogger sharedLogger].filterPredicate = [NSPredicate predicateWithBlock:^BOOL(id evaluatedObject, NSDictionary *bindings) {
-        NSURLRequest * requestToEvaluate = (NSURLRequest *)evaluatedObject;
-        return [requestToEvaluate.allHTTPHeaderFields[@"Accept"] isEqualToString:@"image/*"];
-    }];
-    [[AFNetworkActivityLogger sharedLogger] startLogging];
+//    [AFNetworkActivityLogger sharedLogger].filterPredicate = [NSPredicate predicateWithBlock:^BOOL(id evaluatedObject, NSDictionary *bindings) {
+//        NSURLRequest * requestToEvaluate = (NSURLRequest *)evaluatedObject;
+//        return [requestToEvaluate.allHTTPHeaderFields[@"Accept"] isEqualToString:@"image/*"];
+//    }];
+//    [[AFNetworkActivityLogger sharedLogger] startLogging];
     
     return YES;
 }
