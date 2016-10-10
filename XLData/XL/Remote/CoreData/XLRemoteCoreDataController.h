@@ -29,9 +29,7 @@
 #import "XLSearchBar.h"
 #import "XLRemoteControllerDelegate.h"
 
-@protocol XLRemoteControllerDelegate;
-
-@interface XLRemoteCoreDataController : XLCoreDataController<XLDataLoaderDelegate, XLDataLoaderStoreDelegate, UISearchResultsUpdating, XLRemoteControllerDelegate>
+@interface XLRemoteCoreDataController : XLCoreDataController<XLDataLoaderDelegate, XLDataLoaderStoreDelegate, UISearchResultsUpdating>
 
 - (instancetype)initWithCoder:(NSCoder *)aDecoder NS_DESIGNATED_INITIALIZER;
 - (instancetype)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil NS_DESIGNATED_INITIALIZER;
@@ -49,9 +47,6 @@
 /**
  *  networkStatusView is shown when device doesn't have internet connection
  */
-@property (nonatomic) IBOutlet UIView * networkStatusView;
 @property (readonly) UIRefreshControl * refreshControl;
-
-@property id<XLRemoteControllerDelegate> remoteControllerDelegate;
 
 @end

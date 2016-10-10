@@ -24,7 +24,6 @@
 // THE SOFTWARE.
 
 #import "XLDataStore.h"
-#import "XLNetworkStatusView.h"
 #import "XLSearchBar.h"
 #import "UIScrollView+SVInfiniteScrolling.h"
 #import "XLRemoteCoreDataController.h"
@@ -39,7 +38,6 @@
 
 @synthesize dataLoader = _dataLoader;
 @synthesize refreshControl = _refreshControl;
-@synthesize remoteControllerDelegate = _remoteControllerDelegate;
 
 - (instancetype)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
@@ -84,33 +82,6 @@
     _refreshControl = [[UIRefreshControl alloc] init];
     [_refreshControl addTarget:self action:@selector(refreshView:) forControlEvents:UIControlEventValueChanged];
     return _refreshControl;
-}
-
--(UIView *)networkStatusView
-{
-    if (!_networkStatusView){
-        _networkStatusView = [XLNetworkStatusView new];
-        _networkStatusView.translatesAutoresizingMaskIntoConstraints = NO;
-        [self.view addSubview:_networkStatusView];
-        [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[networkStatusView]|" options:0 metrics:0 views:@{@"networkStatusView": _networkStatusView}]];
-        [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:[topLayoutGuide][networkStatusView(30)]" options:0 metrics:0 views:@{@"networkStatusView": _networkStatusView, @"topLayoutGuide": self.topLayoutGuide}]];
-        [self.view sendSubviewToBack:_networkStatusView];
-    }
-    return _networkStatusView;
-}
-
-
--(id<XLRemoteControllerDelegate>)remoteControllerDelegate
-{
-    if (_remoteControllerDelegate){
-        return _remoteControllerDelegate;
-    }
-    return self;
-}
-
--(void)setRemoteControllerDelegate:(id<XLRemoteControllerDelegate>)remoteControllerDelegate
-{
-    _remoteControllerDelegate = remoteControllerDelegate;
 }
 
 #pragma mark - UIViewController life cycle.
@@ -165,19 +136,6 @@
             [self.dataLoader forceLoad:NO];
         }
     }
-    if ((self.options & XLRemoteDataStoreControllerOptionShowNetworkReachability) == XLRemoteDataStoreControllerOptionShowNetworkReachability){
-        [[NSNotificationCenter defaultCenter] addObserver:self
-                                                 selector:@selector(networkingReachabilityDidChange:)
-                                                     name:AFNetworkingReachabilityDidChangeNotification
-                                                   object:nil];
-        [self updateNoInternetConnectionOverlayIfNeeded:NO];
-    }
-}
-
--(void)viewDidDisappear:(BOOL)animated
-{
-    [super viewDidDisappear:animated];
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:AFNetworkingReachabilityDidChangeNotification object:nil];
 }
 
 -(void)refreshView:(UIRefreshControl *)refresh {
@@ -192,38 +150,6 @@
         [[[self dataSetView] infiniteScrollingView] stopAnimating];
         [self.refreshControl endRefreshing];
     }
-}
-
-
-#pragma mark - XLRemoteControllerDelegate
-
--(void)dataController:(UIViewController *)controller showNoInternetConnection:(BOOL)animated
-{
-    __weak __typeof(self)weakSelf = self;
-    weakSelf.networkStatusView.alpha = 0.0;
-    [self.networkStatusView.superview bringSubviewToFront:self.networkStatusView];
-    [UIView animateWithDuration:(animated ? 0.5 : 0.0)
-                          delay:0.0
-                        options:(UIViewAnimationOptionBeginFromCurrentState | UIViewAnimationOptionOverrideInheritedDuration | UIViewAnimationOptionAllowUserInteraction | UIViewAnimationCurveLinear)
-                     animations:^{
-                         weakSelf.networkStatusView.alpha = 1.0f;
-                     }
-                     completion:nil];
-}
-
--(void)dataController:(UIViewController *)controller hideNoInternetConnection:(BOOL)animated
-{
-    __weak __typeof(self)weakSelf = self;
-    [UIView animateWithDuration:(animated ? 0.5 : 0.0) delay:0.0
-                        options:(UIViewAnimationOptionBeginFromCurrentState | UIViewAnimationOptionAllowUserInteraction | UIViewAnimationOptionOverrideInheritedDuration | UIViewAnimationCurveLinear)
-                     animations:^{
-                         weakSelf.networkStatusView.alpha = 0.0f;
-                     }
-                     completion:^(BOOL finished) {
-                         if (finished && _isConnectedToInternet){
-                             [weakSelf.networkStatusView.superview sendSubviewToBack:weakSelf.networkStatusView];
-                         }
-                     }];
 }
 
 #pragma mark - XLDataLoaderDelegate
@@ -268,23 +194,6 @@
 
 
 #pragma mark - Helpers
-
--(void)networkingReachabilityDidChange:(NSNotification *)notification
-{
-    [self updateNoInternetConnectionOverlayIfNeeded:YES];
-}
-
--(void)updateNoInternetConnectionOverlayIfNeeded:(BOOL)animated
-{
-    AFHTTPSessionManager * sessionManager;
-    if ( !(sessionManager = ([self sessionManagerForDataLoader:self.dataLoader])) || (_isConnectedToInternet = ([sessionManager.reachabilityManager
-                                    networkReachabilityStatus] != AFNetworkReachabilityStatusNotReachable))){
-        [self.remoteControllerDelegate dataController:self hideNoInternetConnection:animated];
-    }
-    else{
-        [self.remoteControllerDelegate dataController:self showNoInternetConnection:animated];
-    }
-}
 
 -(id)dataSetView
 {

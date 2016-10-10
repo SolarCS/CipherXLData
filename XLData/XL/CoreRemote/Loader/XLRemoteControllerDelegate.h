@@ -30,20 +30,10 @@
 typedef NS_OPTIONS(NSUInteger, XLRemoteControllerOptions) {
     XLRemoteDataStoreControllerOptionSupportRefreshControl = 1 << 1,
     XLRemoteDataStoreControllerOptionPagingEnabled = 1 << 2,
-    XLRemoteDataStoreControllerOptionShowNetworkReachability = 1 << 3,
-    XLRemoteDataStoreControllerOptionShowNetworkConnectivityErrors = 1 << 4,
-    XLRemoteDataStoreControllerOptionsFetchOnlyOnce = 1 << 5,
-    XLRemoteDataStoreControllerOptionsSkipInitialFetch = 1 << 6,
-    XLRemoteDataStoreControllerOptionDefault = XLRemoteDataStoreControllerOptionSupportRefreshControl | XLRemoteDataStoreControllerOptionPagingEnabled | XLRemoteDataStoreControllerOptionShowNetworkReachability
+    XLRemoteDataStoreControllerOptionShowNetworkConnectivityErrors = 1 << 3,
+    XLRemoteDataStoreControllerOptionsFetchOnlyOnce = 1 << 4,
+    XLRemoteDataStoreControllerOptionsSkipInitialFetch = 1 << 5,
+    XLRemoteDataStoreControllerOptionDefault = XLRemoteDataStoreControllerOptionSupportRefreshControl | XLRemoteDataStoreControllerOptionPagingEnabled
 };
 
 #import "XLDataLoader.h"
-
-@protocol XLRemoteControllerDelegate
-
-@required
--(void)dataController:(UIViewController *)controller showNoInternetConnection:(BOOL)animated;
--(void)dataController:(UIViewController *)controller hideNoInternetConnection:(BOOL)animated;
-
-@end
-
